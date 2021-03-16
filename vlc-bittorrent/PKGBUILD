@@ -1,0 +1,37 @@
+# Maintainer: Erik Giron <kreig.iron@gmail.com>
+pkgname=vlc-plugin-bittorrent
+pkgdesc="Bittorrent plugin for VLC"
+arch=('x86_64')
+url="https://github.com/johang/vlc-bittorrent"
+license=('GPL3')
+groups=()
+depends=('vlc>3.0.0' 'libtorrent-rasterbar')
+optdepends=()
+provides=()
+conflicts=("${pkgname}-git")
+replaces=("${pkgname}-git")
+backup=()
+options=()
+# install="notes.install"
+deb_pkgver="2.12"
+deb_pkgrel="2"
+pkgver="${deb_pkgver}.${deb_pkgrel}"
+pkgrel="1"
+source_x86_64=("http://ftp.br.debian.org/debian/pool/main/v/${pkgname}/${pkgname}_${deb_pkgver}-${deb_pkgrel}_amd64.deb")
+md5sums_x86_64=("SKIP")
+
+prepare() {
+    tar -xvf data.tar.xz
+}
+
+package() {
+    echo "creating ${pkgdir}/usr/share"
+    mkdir -p "${pkgdir}/usr/share"
+    echo "copying ${srcdir}/usr/share to ${pkgdir}/usr/share"
+    cp -r "${srcdir}/usr/share" "${pkgdir}/usr/share"
+    echo "looking for plugin ${pkgname}_plugin.so in dir ${srcdir}/usr/lib"
+    local plugin=$(find "${srcdir}/usr/lib" -name "libaccess_bittorrent_plugin.so")
+    echo "Found ${plugin}"
+    install -Dm0755 "${plugin}" "${pkgdir}/usr/lib/vlc/plugins/access/libaccess_bittorrent_plugin.so"
+}
+
